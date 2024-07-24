@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    color: #333;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #0056b3;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+form, table {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #004494;
+}
+
+.button {
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 4px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.button.excluir {
+    background-color: #f44336; /* Vermelho para botão Excluir */
+    color: white;
+}
+
+.button.excluir:hover {
+    background-color: #cc0000; /* Cor mais escura ao passar o mouse */
+}
+
+.button.feito {
+    background-color: #4CAF50; /* Verde para botão Feito */
+    color: white;
+}
+
+.button.feito.vermelho {
+    background-color: #f44336; /* Vermelho para botão Feito após clicar */
+}
+
+.button.feito:hover {
+    background-color: #45a049;
+}
+
+.button.voltar {
+    background-color: #2196F3; /* Azul para botão Voltar */
+    color: white;
+}
+
+.button.voltar:hover {
+    background-color: #1976D2; /* Azul mais escuro ao passar o mouse */
+}
+
+.concluido {
+    text-decoration: line-through;
+    color: gray;
+}

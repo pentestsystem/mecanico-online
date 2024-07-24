@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        li {
+            margin: 10px;
+        }
+        a {
+            display: inline-block;
+            padding: 15px 30px;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            width: 250px; /* largura dos botões */
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem-vindo à Oficina</h1>
+
+    <h2>Escolha uma opção:</h2>
+    <ul>
+        <li><a href="cadastro.php">Cadastro de Cliente e Veículo</a></li>
+        <li><a href="listar_clientes.php">Listar Clientes</a></li>
+        <li><a href="listar_veiculos.php">Listar Veículos</a></li>
+        <li><a href="listar_servicos.php">Listar Serviços</a></li>
+        <li><a href="recibo.php">Criar Recibo</a></li>
+    </ul>
+</body>
+</html>
