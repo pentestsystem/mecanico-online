@@ -51,7 +51,8 @@
         }
         .form-group input[type="text"], 
         .form-group input[type="number"], 
-        .form-group select {
+        .form-group select, 
+        .form-group textarea {
             width: calc(50% - 10px);
             padding: 8px;
             font-size: 16px;
@@ -154,6 +155,12 @@
             <div class="form-group">
                 <button type="button" onclick="adicionarProduto()" class="button">Adicionar Produto</button>
             </div>
+
+            <!-- Observações -->
+            <div class="form-group">
+                <label for="observacoes">Observações:</label>
+                <textarea id="observacoes" name="observacoes" rows="4" style="width: 100%;"></textarea>
+            </div>
         </form>
 
         <!-- Tabela para exibir os produtos inseridos -->
@@ -242,114 +249,87 @@
             deleteButton.style.backgroundColor = '#f44336';
             deleteButton.style.margin = '0';
             deleteButton.onclick = function() {
-                removerProduto(newRow, total);
+                var rowIndex = this.parentNode.parentNode.rowIndex;
+                tableBody.deleteRow(rowIndex - 1);
+                atualizarTotalGeral(-total);
             };
             cellAction.appendChild(deleteButton);
 
-            totalGeral += total;
-            document.getElementById('totalGeral').textContent = totalGeral.toFixed(2);
+            atualizarTotalGeral(total);
 
+            // Limpar os campos do formulário
             document.getElementById('quantidade').value = '';
             document.getElementById('descricao').value = '';
             document.getElementById('valorUnitario').value = '';
-            document.getElementById('quantidade').focus();
         }
 
-        function removerProduto(row, total) {
-            var tableBody = document.getElementById('tabelaProdutos');
-            tableBody.deleteRow(row.rowIndex - 1);
-
-            totalGeral -= total;
+        function atualizarTotalGeral(valor) {
+            totalGeral += valor;
             document.getElementById('totalGeral').textContent = totalGeral.toFixed(2);
         }
 
-        function obterStatusSelecionado() {
-            var status = [];
-            document.querySelectorAll('input[name="status"]:checked').forEach((checkbox) => {
-                status.push(checkbox.value);
-            });
-            return status.join(', ');
-        }
-
         function imprimirRecibo() {
-            var cliente = document.getElementById('cliente').options[document.getElementById('cliente').selectedIndex].text;
-            var status = obterStatusSelecionado();
+            var cliente = document.getElementById('cliente').selectedOptions[0].text;
+            var observacoes = document.getElementById('observacoes').value;
+            var status = "";
+            if (document.getElementById('pago').checked) status = "PAGO";
+            else if (document.getElementById('orcamento').checked) status = "ORÇAMENTO";
+            else if (document.getElementById('recibo').checked) status = "RECIBO";
 
-            var reciboContent = `
-                <h2>Recibo</h2>
-                <p>Cliente: ${cliente}</p>
-                <table border="1" width="100%">
-                    <tr>
-                        <th>Quantidade</th>
-                        <th>Descrição</th>
-                        <th>Valor Unitário</th>
-                        <th>Total</th>
-                    </tr>
-            `;
-
-            document.querySelectorAll('#tabelaProdutos tr').forEach((row) => {
-                var quantidade = row.cells[0].textContent;
-                var descricao = row.cells[1].textContent;
-                var valorUnitario = row.cells[2].textContent;
-                var total = row.cells[3].textContent;
-                reciboContent += `
-                    <tr>
-                        <td>${quantidade}</td>
-                        <td>${descricao}</td>
-                        <td>${valorUnitario}</td>
-                        <td>${total}</td>
-                    </tr>
-                `;
-            });
-
-            reciboContent += `
-                </table>
-                <p>Total Geral: R$ ${document.getElementById('totalGeral').textContent}</p>
-                <p>Status: ${status}</p>
-                <p class="signature-line">Assinatura do Técnico</p>
-            `;
-
-            var reciboWindow = window.open('', '', 'width=800,height=600');
-            reciboWindow.document.write('<html><head><title>Recibo</title></head><body>');
-            reciboWindow.document.write(reciboContent);
-            reciboWindow.document.write('</body></html>');
-            reciboWindow.document.close();
-            reciboWindow.print();
+            var popup = window.open('', '_blank');
+            popup.document.write('<html><head><title>Recibo</title></head><body>');
+            popup.document.write('<div class="container">');
+            popup.document.write('<div class="logo"><img src="caminho/para/sua/logo.png" alt="Logo da Empresa"></div>');
+            popup.document.write('<h3>Recibo de Produtos</h3>');
+            popup.document.write('<strong>Cliente:</strong> ' + cliente + '<br>');
+            popup.document.write('<table><thead><tr><th>Quantidade</th><th>Descrição</th><th>Valor Unitário</th><th>Total</th></tr></thead><tbody>');
+            var rows = document.getElementById('tabelaProdutos').rows;
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].cells;
+                popup.document.write('<tr>');
+                popup.document.write('<td>' + cells[0].textContent + '</td>');
+                popup.document.write('<td>' + cells[1].textContent + '</td>');
+                popup.document.write('<td>' + cells[2].textContent + '</td>');
+                popup.document.write('<td>' + cells[3].textContent + '</td>');
+                popup.document.write('</tr>');
+            }
+            popup.document.write('</tbody></table>');
+            popup.document.write('<strong>Total Geral dos Produtos Registrados: R$ ' + totalGeral.toFixed(2) + '</strong><br>');
+            popup.document.write('<strong>Observações:</strong> ' + observacoes + '<br>');
+            popup.document.write('<strong>Status:</strong> ' + status + '<br>');
+            popup.document.write('<div class="signature-line">Assinatura do Técnico</div>');
+            popup.document.write('</div>');
+            popup.document.write('</body></html>');
+            popup.document.close();
+            popup.print();
         }
 
         function gerarPDF() {
             var { jsPDF } = window.jspdf;
             var doc = new jsPDF();
+            doc.autoTable({ html: 'table' });
 
-            var cliente = document.getElementById('cliente').options[document.getElementById('cliente').selectedIndex].text;
-            var status = obterStatusSelecionado();
+            var cliente = document.getElementById('cliente').selectedOptions[0].text;
+            var observacoes = document.getElementById('observacoes').value;
+            var status = "";
+            if (document.getElementById('pago').checked) status = "PAGO";
+            else if (document.getElementById('orcamento').checked) status = "ORÇAMENTO";
+            else if (document.getElementById('recibo').checked) status = "RECIBO";
 
-            doc.setFontSize(18);
-            doc.text("Recibo", 14, 22);
             doc.setFontSize(12);
-            doc.text(`Cliente: ${cliente}`, 14, 32);
-
-            var headers = [["Quantidade", "Descrição", "Valor Unitário", "Total"]];
-            var data = [];
-
-            document.querySelectorAll('#tabelaProdutos tr').forEach((row) => {
-                var rowData = [
-                    row.cells[0].textContent,
-                    row.cells[1].textContent,
-                    row.cells[2].textContent,
-                    row.cells[3].textContent
-                ];
-                data.push(rowData);
-            });
-
+            doc.text(20, 20, 'Recibo de Produtos');
+            doc.text(20, 30, 'Cliente: ' + cliente);
             doc.autoTable({
-                head: headers,
-                body: data,
-                startY: 40
+                startY: 40,
+                html: 'table',
+                headStyles: { fillColor: [255, 0, 0] },
+                bodyStyles: { fillColor: [255, 255, 255] },
             });
-
-            doc.text(`Total Geral: R$ ${document.getElementById('totalGeral').textContent}`, 14, doc.lastAutoTable.finalY + 10);
-            doc.text(`Status: ${status}`, 14, doc.lastAutoTable.finalY + 20);
+            doc.text(20, doc.autoTable.previous.finalY + 10, 'Total Geral dos Produtos Registrados: R$ ' + totalGeral.toFixed(2));
+            doc.text(20, doc.autoTable.previous.finalY + 20, 'Observações: ' + observacoes);
+            doc.text(20, doc.autoTable.previous.finalY + 30, 'Status: ' + status);
+            doc.text(20, doc.autoTable.previous.finalY + 40, 'Assinatura do Técnico:');
+            doc.line(20, doc.autoTable.previous.finalY + 45, 190, doc.autoTable.previous.finalY + 45);
 
             doc.save('recibo.pdf');
         }
